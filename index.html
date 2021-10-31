@@ -40,12 +40,13 @@
 			support: false,
 			dateFormat: "MMM Do YYYY", // http://momentjs.com/docs/#/displaying/
 			layoutTemplate: "{entries}",
-			entryTemplate: '<div class="tab"><input type="checkbox" id="chck{index}"><label class="tab-label" for="chck{index}">{num} {curator}</label><div class="tab-content"><h2>{subtitle}<span class="date"> · {date}</span></h2>{enclosure}<p>{body}</span></p></div>',
+			entryTemplate: '<div class="tab" id="{num}"><input type="checkbox" id="chck{index}"><label class="tab-label" for="chck{index}">{num} {curator}</label><div class="tab-content"><h2>{subtitle}<span class="date"> · {date}</span></h2>{enclosure}<p>{body}</span></p></div>',
 			error: function() {},
 		  	success: function() {
 				// console.log(this.feed)
 				let img_src=this.feed.title.replace(/\s+/g, '-').toLowerCase(); // replace spaces by dashes and make lowecase
-				let html='<img src="'+img_src+'.jpg" style="width:100%; max-width:320px" alt="'+this.feed.title+'">';
+				let html='<picture><source srcset="'+img_src+'-dark.jpg" media="(prefers-color-scheme: dark)"><img src="'+img_src+'.jpg" style="width:100%; max-width:320px" alt="'+this.feed.title+'"></picture>';
+				// let html='<img src="'+img_src+'.jpg" style="width:100%; max-width:320px" alt="'+this.feed.title+'">';
 				// html+='<h1>'+this.feed.title+'</h1>';
 				html+='<h2>'+this.feed.description+'</h2>';
 				html+='<div class="badges">';
@@ -55,6 +56,27 @@
 				html+='<a href="http://feeds.feedburner.com/all-my-favorite-songs"><img src="https://redwood-labs.s3.amazonaws.com/showpage/static/public/images/badges/rss-badge.svg"></a>';
 				html+='</div>';
 				$( "#rss-desc").append( html );
+
+				// scroll to episode and open tab if ep hash is set
+				let myhash=window.location.hash;
+				let myelem=document.getElementById(myhash.substring(1))
+				if(myhash && myelem ) {
+					myelem.scrollIntoView(true);					
+					$(myhash+" input").prop("checked", true);					
+				} 
+
+				// $(".tab audio").on('loadstart', function() {
+				// 	console.log('loaded audio '+this)
+				// });
+
+				$("audio").bind('loadeddata',function(e) { 
+					console.log('loadeddata ' + e.target);
+				});
+
+				$("audio").bind("play", function (e) {
+					console.log('play ' + e.target);
+					// console.debug("Audio paused. Current time of audioplay: " + e.target.currentTime );
+				});
 		  	},
 			onData: function() {},
 			tokens: {
@@ -82,6 +104,9 @@
 	})
 </script>
 <style>
+
+
+
 	html,body{
 		font-family: sans-serif;
 		background-color:white;
@@ -211,7 +236,16 @@
 		 max-height: 600vh;
 		 padding: 0 0 1em 0;
 	}
- 
+
+	/* Dar k mode */
+	@media (prefers-color-scheme: dark) {
+		html,body{ background-color:#222; color:#ddd; }
+		p{ color: #aaa; }
+		.tab { border-bottom: 2px solid #666; }
+		.badges img { opacity: .75; transition: opacity .5s ease-in-out;}
+		.badges img:hover { opacity: 1; }
+	}
+
 </style>
 </head>
 <body>
