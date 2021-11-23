@@ -44,18 +44,24 @@ jQuery(function($) {
 		};
 
 		let img_src=feed.title.replace(/\s+/g, '-').toLowerCase(); // replace spaces by dashes and make lowecase
+
 		let html=`
-		<picture><source srcset="img/`+img_src+`-dark.jpg" media="(prefers-color-scheme: dark)"><img src="img/`+img_src+`.jpg" style="width:100%; max-width:320px" alt="`+feed.title+`"></picture>
-		<h2>`+feed.description+`</h2>
-		<div class="badges">
-			<a href="https://podcasts.google.com/feed/aHR0cDovL2ZlZWRzLmZlZWRidXJuZXIuY29tL2FsbC1teS1mYXZvcml0ZS1zb25ncw=="><img src="https://redwood-labs.s3.amazonaws.com/showpage/static/public/images/badges/googlepodcasts-badge.svg"></a>
-			<a href="https://podcasts.apple.com/us/podcast/all-my-favorite-songs/id1591646695?mt=2&ls=1"><img src="https://redwood-labs.s3.amazonaws.com/showpage/static/public/images/badges/applepodcasts-badge.svg"></a>
-			<a href="https://pca.st/i8poy7na"><img src="https://redwood-labs.s3.amazonaws.com/showpage/static/public/images/badges/pocketcasts-badge.svg"></a>
-			<a href="http://feeds.feedburner.com/all-my-favorite-songs"><img src="https://redwood-labs.s3.amazonaws.com/showpage/static/public/images/badges/rss-badge.svg"></a>
+			<picture>
+				<source srcset="img/`+img_src+`-dark.jpg" media="(prefers-color-scheme: dark)">
+				<img src="img/`+img_src+`.jpg" style="width:100%; max-width:320px" alt="`+feed.title+`">
+			</picture>
+		`
+		html+='<h1>'+this.feed.title+'</h1>';
+		html+='<h2>'+feed.description+'</h2>';
+		html=`
+			<div class="badges">
+				<a href="https://podcasts.google.com/feed/aHR0cDovL2ZlZWRzLmZlZWRidXJuZXIuY29tL2FsbC1teS1mYXZvcml0ZS1zb25ncw=="><img src="https://redwood-labs.s3.amazonaws.com/showpage/static/public/images/badges/googlepodcasts-badge.svg"></a>
+				<a href="https://podcasts.apple.com/us/podcast/all-my-favorite-songs/id1591646695?mt=2&ls=1"><img src="https://redwood-labs.s3.amazonaws.com/showpage/static/public/images/badges/applepodcasts-badge.svg"></a>
+				<a href="https://pca.st/i8poy7na"><img src="https://redwood-labs.s3.amazonaws.com/showpage/static/public/images/badges/pocketcasts-badge.svg"></a>
+				<a href="http://feeds.feedburner.com/all-my-favorite-songs"><img src="https://redwood-labs.s3.amazonaws.com/showpage/static/public/images/badges/rss-badge.svg"></a>
 			</div>
 		`
 		$( "#rss-desc").append( html );
-
 
 		$(data).find("item").each(function (index) { // or "item" or whatever suits your feed
 				var el = $(this);
@@ -70,7 +76,7 @@ jQuery(function($) {
 				item.num = item.title.replace(/[^0-9]*/, '').replace(/ .*/, '');
 				item.curator = item.title.replace(/[^0-9]*/, '').replace(/.* by /, '').replace(/ - .*/, '');
 				item.subtitle = item.title.replace(/[^0-9]*/, '').replace(/.* - /, ''); // replace everything up to first number then from beginning till first ' - '
-				// item.title = 	item.title.replace(/[^0-9]*/, '').replace(/ - .*/, ''); // replace everything up to first number, then from ' - ' till end
+				// item.title = item.title.replace(/[^0-9]*/, '').replace(/ - .*/, ''); // replace everything up to first number, then from ' - ' till end
 				item.cover = item.enclosure_url.replace(/\.[^/.]+$/, "")+'_thumb.jpg'
 				item.date = moment(item.pubdate).format('MMM Do YYYY');
 
